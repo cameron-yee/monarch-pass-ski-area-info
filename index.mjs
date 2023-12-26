@@ -105,7 +105,7 @@ async function getMonarchInfo() {
     .filter(Boolean)
 
   if (lifts.length % 2 !== 0) {
-    console.warn('Error scraping Monarch lift info. . Check scraping elements.')
+    console.warn('Error scraping Monarch lift info. Check scraping elements.')
     return infoObject
   }
 
