@@ -50,13 +50,56 @@ async function getABasinInfo() {
 async function getLovelandInfo() {
   const html = await fetchHTML('https://skiloveland.com/trail-lift-report/')
   const $ = cheerio.load(html)
-  let infoObject = {}
+  let infoObject = {
+    liftInfo: {},
+    snowInfo: {}
+  }
 
+  /**
+    * Calculating open runs with icon elements
+    */
+  const openRuns = $('img[src$="icon_open.png"]').length - 1
+  const closedRuns = $('img[src$="icon_closed.png"]').length - 1
+  const totalRuns = openRuns + closedRuns
+  infoObject.liftInfo['Open Runs'] = `${openRuns} / ${totalRuns}`
+
+  /**
+    * Lift Report
+    */
   const liftInfoElements = $('h2[id^="tablepress-"]')
   liftInfoElements.each((i, elem) => {
     const [label, value] = $(elem).text().split('-')
-    infoObject[label.trim()] = value.trim()
+    infoObject.liftInfo[label.trim()] = value.trim()
   })
+
+  /**
+    * Snow Report
+    */
+  const snowTable = $('#tablepress-1')
+  let labels = []
+  snowTable
+    .find('th')
+    .contents()
+    .each((i, content) => {
+      labels.push(content.data)
+    })
+
+  let values = []
+  snowTable
+    .find('td')
+    .contents()
+    .each((i, content) => {
+      values.push(content.data)
+    })
+
+  if (labels.length !== values.length) {
+    console.warn('Error fetching Loveland snow info. Check scraping elements.')
+    return infoObject
+  }
+
+  for (let i = 0; i < labels.length; i++) {
+    infoObject.snowInfo[labels[i]] = values[i]
+  }
 
   return infoObject
 }
@@ -156,7 +199,7 @@ export default async function Main() {
   const wrapperClassnames = classnames({ "p-3 bg-gray-800": true })
   const titleClassnames = classnames({ "text-3xl mb-5 text-gray-300": true })
   const areaTitleClassnames = classnames({ "text-2xl mb-3 pb-1 text-gray-200 border-b-4 border-blue-900": true })
-  const areaWrapperClassnames = classnames({ "bg-gray-600 p-3 mb-5 rounded": true })
+  const areaWrapperClassnames = classnames({ "bg-gray-600 p-3 mb-5 rounded shadow-lg": true })
   const subHeaderClassnames = classnames({ "text-xl mb-3 text-gray-300": true })
   const infoBlockClassnames = classnames({ "p-3": true })
   const labelClassNames = classnames({ "font-bold text-gray-400": true })
@@ -191,15 +234,21 @@ export default async function Main() {
       <div className={areaWrapperClassnames}>
         <h2 className={areaTitleClassnames}>Loveland</h2>
         <h3 className={subHeaderClassnames}>Snow Info</h3>
-        <div className={labelClassNames}>
-           No Data
+        <div className={infoBlockClassnames}>
+           {Object.keys(lovelandInfo.snowInfo).map((label) => {
+             return (
+               <div key={label}>
+                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{lovelandInfo.snowInfo[label]}</span>
+               </div>
+             )
+          })}
         </div>
         <h3 className={subHeaderClassnames}>Lift Info</h3>
         <div className={infoBlockClassnames}>
-          {Object.keys(lovelandInfo).map((label) => {
+          {Object.keys(lovelandInfo.liftInfo).map((label) => {
              return (
                <div key={label}>
-                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{lovelandInfo[label]}</span>
+                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{lovelandInfo.liftInfo[label]}</span>
                </div>
              )
           })}
