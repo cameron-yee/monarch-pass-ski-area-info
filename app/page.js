@@ -2,7 +2,6 @@ import React from 'react'
 import classnames from 'classnames'
 
 import * as cheerio from 'cheerio'
-import puppeteer from 'puppeteer-core';
 
 async function fetchHTML(page) {
   const resp = await fetch(page, { cache: 'no-store' })
@@ -169,32 +168,13 @@ async function getMonarchInfo() {
   return infoObject
 }
 
-async function getCopperInfo() {
-  const browser = await puppeteer.connect({
-    browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`,
-  })
-
-  const page = await browser.newPage()
-
-  await page.goto('https://www.coppercolorado.com/the-mountain/trail-lift-info/winter-trail-report/')
-  const liftInfoAccordion = await page.waitForSelector('#sector-all-lifts-accordion')
-  const liftsOpen = await liftInfoAccordion?.evaluate(el => el.querySelector('ul').querySelector('li').textContent)
-  const [_, label, value] = liftsOpen.match(/(^[A-Za-z\s]+)(.+$)/)
-
-  return {
-    liftInfo: { [label]: value }
-  }
-}
-
 async function compileInfo() {
   const aBasinInfo = await getABasinInfo()
-  const copperInfo = await getCopperInfo()
   const lovelandInfo = await getLovelandInfo()
   const monarchInfo = await getMonarchInfo()
 
   const info = {
     aBasinInfo,
-    copperInfo,
     lovelandInfo,
     monarchInfo
   }
@@ -216,7 +196,6 @@ export default async function Main() {
 
   const {
     aBasinInfo,
-    copperInfo,
     lovelandInfo,
     monarchInfo
   } = data
@@ -251,23 +230,6 @@ export default async function Main() {
              return (
                <div key={label}>
                  <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{aBasinInfo.liftInfo[label]}</span>
-               </div>
-             )
-          })}
-        </div>
-      </div>
-      <div className={areaWrapperClassnames}>
-        <h2 className={areaTitleClassnames}>Copper Mountain</h2>
-        <h3 className={subHeaderClassnames}>Snow Info</h3>
-        <div className={infoBlockClassnames}>
-          <p>No Data</p>
-        </div>
-        <h3 className={subHeaderClassnames}>Lift Info</h3>
-        <div className={infoBlockClassnames}>
-          {Object.keys(copperInfo.liftInfo).map((label) => {
-             return (
-               <div key={label}>
-                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{copperInfo.liftInfo[label]}</span>
                </div>
              )
           })}
