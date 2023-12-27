@@ -1,3 +1,5 @@
+import React from 'react'
+
 import * as cheerio from 'cheerio'
 
 async function fetchHTML(page) {
@@ -17,6 +19,8 @@ async function getABasinInfo() {
   const terrainAndLiftStatus = $('#terrainAndLiftStatus')
   const terrainAndLiftStatusElements = terrainAndLiftStatus.next().find('div')
 
+  infoObject.liftInfo = {}
+
   terrainAndLiftStatusElements.each((i, elem) => {
     const rawText = $(elem).text()
     const texts = rawText.split('\n')
@@ -24,18 +28,19 @@ async function getABasinInfo() {
       .filter(Boolean)
 
     const [value, label] = texts
-    infoObject[label] = value
+    infoObject.liftInfo[label] = value
   })
 
   /**
     * Snow Stats
     */
+  infoObject.snowInfo = {}
   const snowStats = $('.snow-stats')
   snowStats.find('h5').each((i, elem) => {
     const value = $(elem).text().trim()
     const label = $(elem).next().text().trim()
 
-    infoObject[label] = value
+    infoObject.snowInfo[label] = value
   })
 
   return infoObject
@@ -133,9 +138,80 @@ async function compileInfo() {
   return info
 }
 
-async function main() {
+async function getData() {
   const info = await compileInfo()
-  console.log(JSON.stringify(info, null, 2))
+  return info
 }
 
-main()
+export default async function Main() {
+  const data = await getData()
+
+  if (!data) {
+    return <div>Loading...</div>
+  }
+
+  const { aBasinInfo, lovelandInfo, monarchInfo } = data
+
+  return (
+    <div className="p-3">
+      <h1 className="text-3xl mb-5">Monarch Pass Ski Area Info</h1>
+      <h2 className="text-2xl mb-3">Arapahoe Basin</h2>
+      <h3 className="text-xl mb-3">Snow Info</h3>
+      <div className="p-3">
+        {Object.keys(aBasinInfo.snowInfo).map((label) => {
+           return (
+             <div key={label}>
+               <span className="font-bold">{label}: </span><span>{aBasinInfo.snowInfo[label]}</span>
+             </div>
+           )
+        })}
+      </div>
+      <h3 className="text-xl mb-3">Lift Info</h3>
+      <div className="p-3">
+        {Object.keys(aBasinInfo.liftInfo).map((label) => {
+           return (
+             <div key={label}>
+               <span className="font-bold">{label}: </span><span>{aBasinInfo.liftInfo[label]}</span>
+             </div>
+           )
+        })}
+      </div>
+      <h2 className="text-2xl mb-3">Loveland</h2>
+      <h3 className="text-xl">Snow Info</h3>
+      <div className="p-3 font-bold">
+         No Data
+      </div>
+      <h3 className="text-xl mb-3">Lift Info</h3>
+      <div className="p-3">
+        {Object.keys(lovelandInfo).map((label) => {
+           return (
+             <div key={label}>
+               <span className="font-bold">{label}: </span><span>{lovelandInfo[label]}</span>
+             </div>
+           )
+        })}
+      </div>
+      <h2 className="text-2xl mb-3">Monarch</h2>
+      <h3 className="text-xl mb-3">Snow Info</h3>
+      <div className="p-3">
+        {Object.keys(monarchInfo.snowInfo).map((label) => {
+           return (
+             <div key={label}>
+               <span className="font-bold">{label}: </span><span>{monarchInfo.snowInfo[label]}</span>
+             </div>
+           )
+        })}
+      </div>
+      <h3 className="text-xl my-3">Lift Info</h3>
+      <div className="p-3">
+        {Object.keys(monarchInfo.liftInfo).map((label) => {
+           return (
+             <div key={label}>
+               <span className="font-bold">{label}: </span><span>{monarchInfo.liftInfo[label]}</span>
+             </div>
+           )
+        })}
+      </div>
+    </div>
+  )
+}
