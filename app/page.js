@@ -1,4 +1,5 @@
 import React from 'react'
+import classnames from 'classnames'
 
 import * as cheerio from 'cheerio'
 
@@ -152,65 +153,80 @@ export default async function Main() {
 
   const { aBasinInfo, lovelandInfo, monarchInfo } = data
 
+  const wrapperClassnames = classnames({ "p-3 bg-gray-800": true })
+  const titleClassnames = classnames({ "text-3xl mb-5 text-gray-300": true })
+  const areaTitleClassnames = classnames({ "text-2xl mb-3 pb-1 text-gray-200 border-b-4 border-blue-900": true })
+  const areaWrapperClassnames = classnames({ "bg-gray-600 p-3 mb-5 rounded": true })
+  const subHeaderClassnames = classnames({ "text-xl mb-3 text-gray-300": true })
+  const infoBlockClassnames = classnames({ "p-3": true })
+  const labelClassNames = classnames({ "font-bold text-gray-400": true })
+  const infoClassNames = classnames({ "font-bold text-gray-300": true })
+
   return (
-    <div className="p-3">
-      <h1 className="text-3xl mb-5">Monarch Pass Ski Area Info</h1>
-      <h2 className="text-2xl mb-3">Arapahoe Basin</h2>
-      <h3 className="text-xl mb-3">Snow Info</h3>
-      <div className="p-3">
-        {Object.keys(aBasinInfo.snowInfo).map((label) => {
-           return (
-             <div key={label}>
-               <span className="font-bold">{label}: </span><span>{aBasinInfo.snowInfo[label]}</span>
-             </div>
-           )
-        })}
+    <div className={wrapperClassnames}>
+      <h1 className={titleClassnames}>Monarch Pass Ski Area Info</h1>
+      <div className={areaWrapperClassnames}>
+        <h2 className={areaTitleClassnames}>Arapahoe Basin</h2>
+        <h3 className={subHeaderClassnames}>Snow Info</h3>
+        <div className={infoBlockClassnames}>
+          {Object.keys(aBasinInfo.snowInfo).map((label) => {
+             return (
+               <div key={label}>
+                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{aBasinInfo.snowInfo[label]}</span>
+               </div>
+             )
+          })}
+        </div>
+        <h3 className={subHeaderClassnames}>Lift Info</h3>
+        <div className={infoBlockClassnames}>
+          {Object.keys(aBasinInfo.liftInfo).map((label) => {
+             return (
+               <div key={label}>
+                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{aBasinInfo.liftInfo[label]}</span>
+               </div>
+             )
+          })}
+        </div>
       </div>
-      <h3 className="text-xl mb-3">Lift Info</h3>
-      <div className="p-3">
-        {Object.keys(aBasinInfo.liftInfo).map((label) => {
-           return (
-             <div key={label}>
-               <span className="font-bold">{label}: </span><span>{aBasinInfo.liftInfo[label]}</span>
-             </div>
-           )
-        })}
+      <div className={areaWrapperClassnames}>
+        <h2 className={areaTitleClassnames}>Loveland</h2>
+        <h3 className={subHeaderClassnames}>Snow Info</h3>
+        <div className={labelClassNames}>
+           No Data
+        </div>
+        <h3 className={subHeaderClassnames}>Lift Info</h3>
+        <div className={infoBlockClassnames}>
+          {Object.keys(lovelandInfo).map((label) => {
+             return (
+               <div key={label}>
+                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{lovelandInfo[label]}</span>
+               </div>
+             )
+          })}
+        </div>
       </div>
-      <h2 className="text-2xl mb-3">Loveland</h2>
-      <h3 className="text-xl">Snow Info</h3>
-      <div className="p-3 font-bold">
-         No Data
-      </div>
-      <h3 className="text-xl mb-3">Lift Info</h3>
-      <div className="p-3">
-        {Object.keys(lovelandInfo).map((label) => {
-           return (
-             <div key={label}>
-               <span className="font-bold">{label}: </span><span>{lovelandInfo[label]}</span>
-             </div>
-           )
-        })}
-      </div>
-      <h2 className="text-2xl mb-3">Monarch</h2>
-      <h3 className="text-xl mb-3">Snow Info</h3>
-      <div className="p-3">
-        {Object.keys(monarchInfo.snowInfo).map((label) => {
-           return (
-             <div key={label}>
-               <span className="font-bold">{label}: </span><span>{monarchInfo.snowInfo[label]}</span>
-             </div>
-           )
-        })}
-      </div>
-      <h3 className="text-xl my-3">Lift Info</h3>
-      <div className="p-3">
-        {Object.keys(monarchInfo.liftInfo).map((label) => {
-           return (
-             <div key={label}>
-               <span className="font-bold">{label}: </span><span>{monarchInfo.liftInfo[label]}</span>
-             </div>
-           )
-        })}
+      <div className={areaWrapperClassnames}>
+        <h2 className={areaTitleClassnames}>Monarch</h2>
+        <h3 className={subHeaderClassnames}>Snow Info</h3>
+        <div className={infoBlockClassnames}>
+          {Object.keys(monarchInfo.snowInfo).map((label) => {
+             return (
+               <div key={label}>
+                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{monarchInfo.snowInfo[label]}</span>
+               </div>
+             )
+          })}
+        </div>
+        <h3 className={subHeaderClassnames}>Lift Info</h3>
+        <div className={infoBlockClassnames}>
+          {Object.keys(monarchInfo.liftInfo).map((label) => {
+             return (
+               <div key={label}>
+                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{monarchInfo.liftInfo[label]}</span>
+               </div>
+             )
+          })}
+        </div>
       </div>
     </div>
   )
