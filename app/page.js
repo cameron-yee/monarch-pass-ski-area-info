@@ -3,7 +3,7 @@ import React from 'react'
 import * as cheerio from 'cheerio'
 
 async function fetchHTML(page) {
-  const resp = await fetch(page)
+  const resp = await fetch(page, { cache: 'no-store' })
   const text = await resp.text()
   return text
 }
