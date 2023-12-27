@@ -2,7 +2,7 @@ import React from 'react'
 import classnames from 'classnames'
 
 import * as cheerio from 'cheerio'
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
 
 async function fetchHTML(page) {
   const resp = await fetch(page, { cache: 'no-store' })
@@ -170,7 +170,10 @@ async function getMonarchInfo() {
 }
 
 async function getCopperInfo() {
-  const browser = await puppeteer.launch({ 'headless': 'new' })
+  const browser = await puppeteer.connect({
+    browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_TOKEN}`,
+  })
+
   const page = await browser.newPage()
 
   await page.goto('https://www.coppercolorado.com/the-mountain/trail-lift-info/winter-trail-report/')
