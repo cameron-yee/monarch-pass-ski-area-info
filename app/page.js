@@ -47,6 +47,15 @@ async function getABasinInfo() {
   return infoObject
 }
 
+async function getCopperInfo() {
+  const resp = await fetch('https://api.coppercolorado.com/api/v1/dor/conditions', {
+    cache: 'no-store'
+  })
+
+  const json = await resp.json()
+  return json
+}
+
 async function getLovelandInfo() {
   const html = await fetchHTML('https://skiloveland.com/trail-lift-report/')
   const $ = cheerio.load(html)
@@ -170,11 +179,13 @@ async function getMonarchInfo() {
 
 async function compileInfo() {
   const aBasinInfo = await getABasinInfo()
+  const copperInfo = await getCopperInfo()
   const lovelandInfo = await getLovelandInfo()
   const monarchInfo = await getMonarchInfo()
 
   const info = {
     aBasinInfo,
+    copperInfo,
     lovelandInfo,
     monarchInfo
   }
@@ -196,6 +207,7 @@ export default async function Main() {
 
   const {
     aBasinInfo,
+    copperInfo,
     lovelandInfo,
     monarchInfo
   } = data
@@ -230,6 +242,65 @@ export default async function Main() {
              return (
                <div key={label}>
                  <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{aBasinInfo.liftInfo[label]}</span>
+               </div>
+             )
+          })}
+        </div>
+      </div>
+      <div className={areaWrapperClassnames}>
+        <h2 className={areaTitleClassnames}>Copper Mountain</h2>
+        <h3 className={subHeaderClassnames}>Snow Info</h3>
+        <div className={infoBlockClassnames}>
+           {(copperInfo?.snowReport[0]?.items || []).map((item) => {
+             return (
+               <div key={item.duration}>
+                 <span className={labelClassNames}>{item.duration}: </span><span className={infoClassNames}>{item.amount}</span>
+               </div>
+             )
+          })}
+        </div>
+        <h3 className={subHeaderClassnames}>Lift Info</h3>
+        <div className={infoBlockClassnames}>
+           <div className="pb-3 mb-3 border-b border-gray-900">
+             <span className={labelClassNames}>Lifts Open: </span><span className={infoClassNames}>{copperInfo?.liftReport?.open} out of {copperInfo?.liftReport?.total}</span>
+           </div>
+           {(copperInfo?.liftReport?.sectors || []).map((sector) => {
+             return (
+               <div key={sector.name}>
+                 <span className={labelClassNames}>{sector.name}: </span><span className={infoClassNames}>{sector.open} out of {sector.total}</span>
+               </div>
+             )
+          })}
+        </div>
+        <h3 className={subHeaderClassnames}>Trail Info</h3>
+        <div className={infoBlockClassnames}>
+           <div className="pb-3 mb-3 border-b border-gray-900">
+             <span className={labelClassNames}>Trails Open: </span><span className={infoClassNames}>{copperInfo?.trailReport?.open} out of {copperInfo?.trailReport?.total}</span>
+           </div>
+           {(copperInfo?.trailReport?.sectors || []).map((sector) => {
+             return (
+               <div key={sector.name}>
+                 <span className={labelClassNames}>{sector.name}: </span><span className={infoClassNames}>{sector.open} out of {sector.total}</span>
+               </div>
+             )
+          })}
+        </div>
+        <h3 className={subHeaderClassnames}>Terrain Park Info</h3>
+        <div className={infoBlockClassnames}>
+           {(copperInfo?.terrainPark?.sectors || []).map((sector) => {
+             return (
+               <div key={sector.name}>
+                 <span className={labelClassNames}>{sector.name}: </span><span className={infoClassNames}>{sector.open} out of {sector.total}</span>
+               </div>
+             )
+          })}
+        </div>
+        <h3 className={subHeaderClassnames}>Uphill Info</h3>
+        <div className={infoBlockClassnames}>
+           {(copperInfo?.uphillTrail?.sectors || []).map((sector) => {
+             return (
+               <div key={sector.name}>
+                 <span className={labelClassNames}>{sector.name}: </span><span className={infoClassNames}>{sector.open} out of {sector.total}</span>
                </div>
              )
           })}
@@ -280,6 +351,19 @@ export default async function Main() {
              )
           })}
         </div>
+      </div>
+      <div className={areaWrapperClassnames}>
+        <h2 className={areaTitleClassnames}>Ski Cooper</h2>
+        <h3 className={subHeaderClassnames}>Snow Info</h3>
+        <img
+          src="https://www.skicooper.com/static/images/SnowReport.jpg"
+          alt="Ski Cooper snow info"
+        />
+        <h3 className={subHeaderClassnames}>Lift Info</h3>
+        <img
+          src="https://www.skicooper.com/static/images/TrailReport.jpg"
+          alt="Ski Cooper run and lift info"
+        />
       </div>
     </div>
   )
