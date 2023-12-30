@@ -178,10 +178,21 @@ async function getMonarchInfo() {
 }
 
 async function compileInfo() {
-  const aBasinInfo = await getABasinInfo()
-  const copperInfo = await getCopperInfo()
-  const lovelandInfo = await getLovelandInfo()
-  const monarchInfo = await getMonarchInfo()
+  const [
+    aBasinInfo,
+    copperInfo,
+    lovelandInfo,
+    monarchInfo
+  ] = await Promise.all([
+    getABasinInfo(),
+    getCopperInfo(),
+    getLovelandInfo(),
+    getMonarchInfo()
+  ])
+  // const aBasinInfo = await getABasinInfo()
+  // const copperInfo = await getCopperInfo()
+  // const lovelandInfo = await getLovelandInfo()
+  // const monarchInfo = await getMonarchInfo()
 
   const info = {
     aBasinInfo,
