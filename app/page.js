@@ -1,9 +1,6 @@
 import React from 'react'
 import classnames from 'classnames'
 
-import fetchHTML from '../data/fetch-html'
-import * as cheerio from 'cheerio'
-
 import getABasinInfo from '../data/get-a-basin-info'
 import getCopperInfo from '../data/get-copper-info'
 import getLovelandInfo from '../data/get-loveland-info'
@@ -12,7 +9,6 @@ import getMonarchInfo from '../data/get-monarch-info'
 import SkiAreaCard from '../components/ski-area-card'
 import SkiAreaCardSubTitle from '../components/ski-area-card-sub-title'
 import SkiAreaCardTitle from '../components/ski-area-card-title'
-import ValuePair from '../components/value-pair'
 
 async function getData() {
   const [
@@ -52,13 +48,11 @@ export default async function Main() {
   } = data
 
   const wrapperClassnames = classnames({ "p-3 bg-gray-800": true })
-  const titleClassnames = classnames({ "text-3xl mb-5 text-gray-300": true })
-  const areaTitleClassnames = classnames({ "text-2xl mb-3 pb-1 text-gray-200 border-b-4 border-blue-900": true })
+  const titleClassnames = classnames({ "text-4xl mb-5 text-zinc-200": true })
   const areaWrapperClassnames = classnames({ "bg-gray-600 p-3 mb-5 rounded shadow-lg": true })
-  const subHeaderClassnames = classnames({ "text-xl mb-3 text-gray-300": true })
   const infoBlockClassnames = classnames({ "py-3": true })
-  const labelClassNames = classnames({ "font-bold text-gray-400": true })
-  const infoClassNames = classnames({ "font-bold text-gray-300": true })
+  const labelClassNames = classnames({ "text-xl font-bold text-gray-300": true })
+  const infoClassNames = classnames({ "text-xl font-bold text-gray-50": true })
 
   return (
     <div className={wrapperClassnames}>
@@ -135,13 +129,13 @@ export default async function Main() {
         name='Monarch'
       />
       <div className={areaWrapperClassnames}>
-        <h2 className={areaTitleClassnames}>Ski Cooper</h2>
-        <h3 className={subHeaderClassnames}>Snow Info</h3>
+        <SkiAreaCardTitle title={'Ski Cooper'} />
+        <SkiAreaCardSubTitle title={'Snow Info'} />
         <img
           src="https://www.skicooper.com/static/images/SnowReport.jpg"
           alt="Ski Cooper snow info"
         />
-        <h3 className={subHeaderClassnames}>Lift Info</h3>
+        <SkiAreaCardSubTitle title={'Lift Info'} />
         <img
           src="https://www.skicooper.com/static/images/TrailReport.jpg"
           alt="Ski Cooper run and lift info"

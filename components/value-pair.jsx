@@ -1,8 +1,8 @@
 import classnames from 'classnames'
 
 export default function ValuePair({ label, value }) {
-  const labelClassNames = classnames({ "font-bold text-gray-400": true })
-  const infoClassNames = classnames({ "font-bold text-gray-300": true })
+  const labelClassNames = classnames({ "text-xl font-bold text-gray-300": true })
+  const infoClassNames = classnames({ "text-xl font-bold text-gray-50": true })
 
   return (
     <div>
