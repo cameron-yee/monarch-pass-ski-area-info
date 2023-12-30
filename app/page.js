@@ -52,7 +52,7 @@ export default async function Main() {
   const areaWrapperClassnames = classnames({ "bg-gray-600 p-3 mb-5 rounded shadow-lg": true })
   const infoBlockClassnames = classnames({ "py-3": true })
   const labelClassNames = classnames({ "text-xl font-bold text-gray-300": true })
-  const infoClassNames = classnames({ "text-xl font-bold text-gray-50": true })
+  const infoClassNames = classnames({ "text-xl font-bold text-orange-200": true })
 
   return (
     <div className={wrapperClassnames}>
