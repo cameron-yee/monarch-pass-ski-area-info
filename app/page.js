@@ -1,183 +1,20 @@
 import React from 'react'
 import classnames from 'classnames'
 
+import fetchHTML from '../data/fetch-html'
 import * as cheerio from 'cheerio'
 
-async function fetchHTML(page) {
-  const resp = await fetch(page, { cache: 'no-store' })
-  const text = await resp.text()
-  return text
-}
+import getABasinInfo from '../data/get-a-basin-info'
+import getCopperInfo from '../data/get-copper-info'
+import getLovelandInfo from '../data/get-loveland-info'
+import getMonarchInfo from '../data/get-monarch-info'
 
-async function getABasinInfo() {
-  const html = await fetchHTML('https://www.arapahoebasin.com/snow-report/#terrainAndLiftStatus')
-  const $ = cheerio.load(html)
-  let infoObject = {}
+import SkiAreaCard from '../components/ski-area-card'
+import SkiAreaCardSubTitle from '../components/ski-area-card-sub-title'
+import SkiAreaCardTitle from '../components/ski-area-card-title'
+import ValuePair from '../components/value-pair'
 
-  /**
-    * Terrain and Lift Status elements
-    */
-  const terrainAndLiftStatus = $('#terrainAndLiftStatus')
-  const terrainAndLiftStatusElements = terrainAndLiftStatus.next().find('div')
-
-  infoObject.liftInfo = {}
-
-  terrainAndLiftStatusElements.each((i, elem) => {
-    const rawText = $(elem).text()
-    const texts = rawText.split('\n')
-      .map(t => t.trim())
-      .filter(Boolean)
-
-    const [value, label] = texts
-    infoObject.liftInfo[label] = value
-  })
-
-  /**
-    * Snow Stats
-    */
-  infoObject.snowInfo = {}
-  const snowStats = $('.snow-stats')
-  snowStats.find('h5').each((i, elem) => {
-    const value = $(elem).text().trim()
-    const label = $(elem).next().text().trim()
-
-    infoObject.snowInfo[label] = value
-  })
-
-  return infoObject
-}
-
-async function getCopperInfo() {
-  const resp = await fetch('https://api.coppercolorado.com/api/v1/dor/conditions', {
-    cache: 'no-store'
-  })
-
-  const json = await resp.json()
-  return json
-}
-
-async function getLovelandInfo() {
-  const html = await fetchHTML('https://skiloveland.com/trail-lift-report/')
-  const $ = cheerio.load(html)
-  let infoObject = {
-    liftInfo: {},
-    snowInfo: {}
-  }
-
-  /**
-    * Calculating open runs with icon elements
-    */
-  const openRuns = $('img[src$="icon_open.png"]').length - 1
-  const closedRuns = $('img[src$="icon_closed.png"]').length - 1
-  const totalRuns = openRuns + closedRuns
-  infoObject.liftInfo['Open Runs'] = `${openRuns} / ${totalRuns}`
-
-  /**
-    * Lift Report
-    */
-  const liftInfoElements = $('h2[id^="tablepress-"]')
-  liftInfoElements.each((i, elem) => {
-    const [label, value] = $(elem).text().split('-')
-    infoObject.liftInfo[label.trim()] = value.trim()
-  })
-
-  /**
-    * Snow Report
-    */
-  const snowTable = $('#tablepress-1')
-  let labels = []
-  snowTable
-    .find('th')
-    .contents()
-    .each((i, content) => {
-      labels.push(content.data)
-    })
-
-  let values = []
-  snowTable
-    .find('td')
-    .contents()
-    .each((i, content) => {
-      values.push(content.data)
-    })
-
-  if (labels.length !== values.length) {
-    console.warn('Error fetching Loveland snow info. Check scraping elements.')
-    return infoObject
-  }
-
-  for (let i = 0; i < labels.length; i++) {
-    infoObject.snowInfo[labels[i]] = values[i]
-  }
-
-  return infoObject
-}
-
-async function getMonarchInfo() {
-  const html = await fetchHTML('https://skimonarch.com/conditions/')
-  const $ = cheerio.load(html)
-  let infoObject = {}
-
-  /**
-    * Snow Report
-    */
-  const accumulationTable = $('.accumulation__table')
-
-  const values = accumulationTable
-    .find('thead')
-    .find('th')
-    .text()
-    .split('\n')
-    .map(t => t.trim())
-    .filter(Boolean)
-
-  const labels = accumulationTable
-    .find('tbody')
-    .find('td')
-    .text()
-    .split('\n')
-    .map(t => t.trim())
-    .filter(Boolean)
-
-  if (values.length !== labels.length) {
-    console.warn('Error fetching Monarch snow info. Check scraping elements.')
-    return infoObject
-  }
-
-  infoObject.snowInfo = {}
-  for (let i = 0; i < values.length; i++) {
-    infoObject.snowInfo[labels[i]] = values[i]
-  }
-
-  /**
-    * Lift Report
-    */
-  const liftsTable = $('table.lifts-table')
-
-  const lifts = liftsTable
-    .find('tbody')
-    .find('tr')
-    .text()
-    .split('\n')
-    .map(t => t.trim())
-    .filter(Boolean)
-
-  if (lifts.length % 2 !== 0) {
-    console.warn('Error scraping Monarch lift info. Check scraping elements.')
-    return infoObject
-  }
-
-  infoObject.liftInfo = {}
-  for (let i = 0; i < lifts.length; i+=2) {
-    const label = lifts[i]
-    const value = lifts[i+1]
-
-    infoObject.liftInfo[label] = value
-  }
-  return infoObject
-}
-
-async function compileInfo() {
+async function getData() {
   const [
     aBasinInfo,
     copperInfo,
@@ -189,10 +26,6 @@ async function compileInfo() {
     getLovelandInfo(),
     getMonarchInfo()
   ])
-  // const aBasinInfo = await getABasinInfo()
-  // const copperInfo = await getCopperInfo()
-  // const lovelandInfo = await getLovelandInfo()
-  // const monarchInfo = await getMonarchInfo()
 
   const info = {
     aBasinInfo,
@@ -201,11 +34,6 @@ async function compileInfo() {
     monarchInfo
   }
 
-  return info
-}
-
-async function getData() {
-  const info = await compileInfo()
   return info
 }
 
@@ -228,39 +56,20 @@ export default async function Main() {
   const areaTitleClassnames = classnames({ "text-2xl mb-3 pb-1 text-gray-200 border-b-4 border-blue-900": true })
   const areaWrapperClassnames = classnames({ "bg-gray-600 p-3 mb-5 rounded shadow-lg": true })
   const subHeaderClassnames = classnames({ "text-xl mb-3 text-gray-300": true })
-  const infoBlockClassnames = classnames({ "p-3": true })
+  const infoBlockClassnames = classnames({ "py-3": true })
   const labelClassNames = classnames({ "font-bold text-gray-400": true })
   const infoClassNames = classnames({ "font-bold text-gray-300": true })
 
   return (
     <div className={wrapperClassnames}>
       <h1 className={titleClassnames}>Monarch Pass Ski Area Info</h1>
+      <SkiAreaCard
+        data={aBasinInfo}
+        name={'Arapahoe Basin'}
+      />
       <div className={areaWrapperClassnames}>
-        <h2 className={areaTitleClassnames}>Arapahoe Basin</h2>
-        <h3 className={subHeaderClassnames}>Snow Info</h3>
-        <div className={infoBlockClassnames}>
-          {Object.keys(aBasinInfo.snowInfo).map((label) => {
-             return (
-               <div key={label}>
-                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{aBasinInfo.snowInfo[label]}</span>
-               </div>
-             )
-          })}
-        </div>
-        <h3 className={subHeaderClassnames}>Lift Info</h3>
-        <div className={infoBlockClassnames}>
-          {Object.keys(aBasinInfo.liftInfo).map((label) => {
-             return (
-               <div key={label}>
-                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{aBasinInfo.liftInfo[label]}</span>
-               </div>
-             )
-          })}
-        </div>
-      </div>
-      <div className={areaWrapperClassnames}>
-        <h2 className={areaTitleClassnames}>Copper Mountain</h2>
-        <h3 className={subHeaderClassnames}>Snow Info</h3>
+        <SkiAreaCardTitle title={'Copper Mountain'} />
+        <SkiAreaCardSubTitle title={'Snow Info'} />
         <div className={infoBlockClassnames}>
            {(copperInfo?.snowReport[0]?.items || []).map((item) => {
              return (
@@ -270,7 +79,7 @@ export default async function Main() {
              )
           })}
         </div>
-        <h3 className={subHeaderClassnames}>Lift Info</h3>
+        <SkiAreaCardSubTitle title={'Lift Info'} />
         <div className={infoBlockClassnames}>
            <div className="pb-3 mb-3 border-b border-gray-900">
              <span className={labelClassNames}>Lifts Open: </span><span className={infoClassNames}>{copperInfo?.liftReport?.open} out of {copperInfo?.liftReport?.total}</span>
@@ -283,7 +92,7 @@ export default async function Main() {
              )
           })}
         </div>
-        <h3 className={subHeaderClassnames}>Trail Info</h3>
+        <SkiAreaCardSubTitle title={'Trail Info'} />
         <div className={infoBlockClassnames}>
            <div className="pb-3 mb-3 border-b border-gray-900">
              <span className={labelClassNames}>Trails Open: </span><span className={infoClassNames}>{copperInfo?.trailReport?.open} out of {copperInfo?.trailReport?.total}</span>
@@ -296,7 +105,7 @@ export default async function Main() {
              )
           })}
         </div>
-        <h3 className={subHeaderClassnames}>Terrain Park Info</h3>
+        <SkiAreaCardSubTitle title={'Terrain Park Info'} />
         <div className={infoBlockClassnames}>
            {(copperInfo?.terrainPark?.sectors || []).map((sector) => {
              return (
@@ -306,7 +115,7 @@ export default async function Main() {
              )
           })}
         </div>
-        <h3 className={subHeaderClassnames}>Uphill Info</h3>
+        <SkiAreaCardSubTitle title={'Uphill Info'} />
         <div className={infoBlockClassnames}>
            {(copperInfo?.uphillTrail?.sectors || []).map((sector) => {
              return (
@@ -317,52 +126,14 @@ export default async function Main() {
           })}
         </div>
       </div>
-      <div className={areaWrapperClassnames}>
-        <h2 className={areaTitleClassnames}>Loveland</h2>
-        <h3 className={subHeaderClassnames}>Snow Info</h3>
-        <div className={infoBlockClassnames}>
-           {Object.keys(lovelandInfo.snowInfo).map((label) => {
-             return (
-               <div key={label}>
-                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{lovelandInfo.snowInfo[label]}</span>
-               </div>
-             )
-          })}
-        </div>
-        <h3 className={subHeaderClassnames}>Lift Info</h3>
-        <div className={infoBlockClassnames}>
-          {Object.keys(lovelandInfo.liftInfo).map((label) => {
-             return (
-               <div key={label}>
-                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{lovelandInfo.liftInfo[label]}</span>
-               </div>
-             )
-          })}
-        </div>
-      </div>
-      <div className={areaWrapperClassnames}>
-        <h2 className={areaTitleClassnames}>Monarch</h2>
-        <h3 className={subHeaderClassnames}>Snow Info</h3>
-        <div className={infoBlockClassnames}>
-          {Object.keys(monarchInfo.snowInfo).map((label) => {
-             return (
-               <div key={label}>
-                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{monarchInfo.snowInfo[label]}</span>
-               </div>
-             )
-          })}
-        </div>
-        <h3 className={subHeaderClassnames}>Lift Info</h3>
-        <div className={infoBlockClassnames}>
-          {Object.keys(monarchInfo.liftInfo).map((label) => {
-             return (
-               <div key={label}>
-                 <span className={labelClassNames}>{label}: </span><span className={infoClassNames}>{monarchInfo.liftInfo[label]}</span>
-               </div>
-             )
-          })}
-        </div>
-      </div>
+      <SkiAreaCard
+        data={lovelandInfo}
+        name='Loveland'
+      />
+      <SkiAreaCard
+        data={monarchInfo}
+        name='Monarch'
+      />
       <div className={areaWrapperClassnames}>
         <h2 className={areaTitleClassnames}>Ski Cooper</h2>
         <h3 className={subHeaderClassnames}>Snow Info</h3>
