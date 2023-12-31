@@ -17,7 +17,6 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <Head>
         <link rel="apple-touch-icon" href="/icon.png" />
-        <meta name="theme-color" content="#cf152d" key="theme-color" />
       </Head>
       <body className={font.className}>{children}</body>
     </html>
