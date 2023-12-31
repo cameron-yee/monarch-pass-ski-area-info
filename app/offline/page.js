@@ -6,7 +6,7 @@ export default function Offline() {
 
   return (
     <div className={offlineClassnames}>
-      Data can't be fetched offline.
+      {'Data can\'t be fetched offline.'}
     </div>
   )
 }
