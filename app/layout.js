@@ -1,5 +1,6 @@
 import { Oswald } from 'next/font/google'
 import './globals.css'
+import Head from "next/head"
 
 const font = Oswald({
   subsets: ['latin'],
@@ -14,6 +15,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
+      <Head>
+        <link rel="apple-touch-icon" href="/icon.png" />
+        <meta name="theme-color" content="#cf152d" key="theme-color" />
+      </Head>
       <body className={font.className}>{children}</body>
     </html>
   )
