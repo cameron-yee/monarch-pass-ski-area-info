@@ -5,6 +5,7 @@ import getABasinInfo from '../data/get-a-basin-info'
 import getCopperInfo from '../data/get-copper-info'
 import getLovelandInfo from '../data/get-loveland-info'
 import getMonarchInfo from '../data/get-monarch-info'
+import getPurgatoryInfo from '../data/get-purgatory-info'
 
 import SkiAreaCard from '../components/ski-area-card'
 import SkiAreaCardSubTitle from '../components/ski-area-card-sub-title'
@@ -15,19 +16,22 @@ async function getData() {
     aBasinInfo,
     copperInfo,
     lovelandInfo,
-    monarchInfo
+    monarchInfo,
+    purgatoryInfo
   ] = await Promise.all([
     getABasinInfo(),
     getCopperInfo(),
     getLovelandInfo(),
-    getMonarchInfo()
+    getMonarchInfo(),
+    getPurgatoryInfo()
   ])
 
   const info = {
     aBasinInfo,
     copperInfo,
     lovelandInfo,
-    monarchInfo
+    monarchInfo,
+    purgatoryInfo
   }
 
   return info
@@ -44,7 +48,8 @@ export default async function Main() {
     aBasinInfo,
     copperInfo,
     lovelandInfo,
-    monarchInfo
+    monarchInfo,
+    purgatoryInfo
   } = data
 
   const wrapperClassnames = classnames({ "p-3 bg-gray-800": true })
@@ -127,6 +132,10 @@ export default async function Main() {
       <SkiAreaCard
         data={monarchInfo}
         name='Monarch'
+      />
+      <SkiAreaCard
+        data={purgatoryInfo}
+        name='Purgatory'
       />
       <div className={areaWrapperClassnames}>
         <SkiAreaCardTitle title={'Ski Cooper'} />
