@@ -3,7 +3,7 @@ import classnames from 'classnames'
 import ValuePair from './value-pair'
 
 export default function InfoBlock({ infoBlock }) {
-  const infoBlockClassnames = classnames({ "py-3": true })
+  const infoBlockClassnames = classnames({ "py-3 tracking-wider": true })
 
   return (
     <div className={infoBlockClassnames}>

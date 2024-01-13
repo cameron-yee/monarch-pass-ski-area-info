@@ -60,7 +60,7 @@ export default async function Main() {
   const wrapperClassnames = classnames({ "p-3 bg-gray-800": true })
   const titleClassnames = classnames({ "text-4xl mb-5 text-zinc-200": true })
   const areaWrapperClassnames = classnames({ "bg-gray-600 p-3 mb-5 rounded shadow-lg": true })
-  const infoBlockClassnames = classnames({ "py-3": true })
+  const infoBlockClassnames = classnames({ "py-3 tracking-wider": true })
   const labelClassNames = classnames({ "text-xl font-bold text-gray-300": true })
   const infoClassNames = classnames({ "text-xl font-bold text-orange-200": true })
 
