@@ -5,6 +5,7 @@ import getABasinInfo from '../data/get-a-basin-info'
 import getCopperInfo from '../data/get-copper-info'
 import getLovelandInfo from '../data/get-loveland-info'
 import getMonarchInfo from '../data/get-monarch-info'
+import getPowderhornInfo from '../data/get-powderhorn-info'
 import getPurgatoryInfo from '../data/get-purgatory-info'
 
 import SkiAreaCard from '../components/ski-area-card'
@@ -17,12 +18,14 @@ async function getData() {
     copperInfo,
     lovelandInfo,
     monarchInfo,
+    powderhornInfo,
     purgatoryInfo
   ] = await Promise.all([
     getABasinInfo(),
     getCopperInfo(),
     getLovelandInfo(),
     getMonarchInfo(),
+    getPowderhornInfo(),
     getPurgatoryInfo()
   ])
 
@@ -31,6 +34,7 @@ async function getData() {
     copperInfo,
     lovelandInfo,
     monarchInfo,
+    powderhornInfo,
     purgatoryInfo
   }
 
@@ -49,6 +53,7 @@ export default async function Main() {
     copperInfo,
     lovelandInfo,
     monarchInfo,
+    powderhornInfo,
     purgatoryInfo
   } = data
 
@@ -132,6 +137,10 @@ export default async function Main() {
       <SkiAreaCard
         data={monarchInfo}
         name='Monarch'
+      />
+      <SkiAreaCard
+        data={powderhornInfo}
+        name='Powderhorn'
       />
       <SkiAreaCard
         data={purgatoryInfo}
