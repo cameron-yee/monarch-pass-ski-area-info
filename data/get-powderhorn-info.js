@@ -5,8 +5,7 @@ export default async function getPowderhornInfo() {
   const html = await fetchHTML('https://www.powderhorn.com/explore/conditions/weather-report.html')
   const $ = cheerio.load(html)
   let infoObject = {
-    liftInfo: {
-    },
+    liftInfo: {},
     snowInfo: {}
   }
 
@@ -28,7 +27,6 @@ export default async function getPowderhornInfo() {
   /**
     * Snow Report
     */
-  let snowElements = {}
   const inElements = $('span:contains("in")')
   inElements.each((i, elem) => {
     const text = $(elem).text().trim()
