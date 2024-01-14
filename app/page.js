@@ -7,6 +7,7 @@ import getLovelandInfo from '../data/get-loveland-info'
 import getMonarchInfo from '../data/get-monarch-info'
 import getPowderhornInfo from '../data/get-powderhorn-info'
 import getPurgatoryInfo from '../data/get-purgatory-info'
+import getSunlightInfo from '../data/get-sunlight-info'
 
 import SkiAreaCard from '../components/ski-area-card'
 import SkiAreaCardSubTitle from '../components/ski-area-card-sub-title'
@@ -19,14 +20,16 @@ async function getData() {
     lovelandInfo,
     monarchInfo,
     powderhornInfo,
-    purgatoryInfo
+    purgatoryInfo,
+    sunlightInfo
   ] = await Promise.all([
     getABasinInfo(),
     getCopperInfo(),
     getLovelandInfo(),
     getMonarchInfo(),
     getPowderhornInfo(),
-    getPurgatoryInfo()
+    getPurgatoryInfo(),
+    getSunlightInfo()
   ])
 
   const info = {
@@ -35,7 +38,8 @@ async function getData() {
     lovelandInfo,
     monarchInfo,
     powderhornInfo,
-    purgatoryInfo
+    purgatoryInfo,
+    sunlightInfo
   }
 
   return info
@@ -54,7 +58,8 @@ export default async function Main() {
     lovelandInfo,
     monarchInfo,
     powderhornInfo,
-    purgatoryInfo
+    purgatoryInfo,
+    sunlightInfo
   } = data
 
   const wrapperClassnames = classnames({ "p-3 bg-gray-800": true })
@@ -159,6 +164,10 @@ export default async function Main() {
           alt="Ski Cooper run and lift info"
         />
       </div>
+      <SkiAreaCard
+        data={sunlightInfo}
+        name='Sunlight'
+      />
     </div>
   )
 }
