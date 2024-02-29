@@ -24,12 +24,12 @@ export default function SkiAreaFilter({ options, onFilter }) {
   }
 
   const baseButtonClassName = classnames({
-    "p-3 shadow-lg rounded-lg text-sm font-bold h-full outline-none border-2 border-transparent opacity-90 focus:opacity-100 text-zinc-100": true
+    "p-3 shadow-lg rounded-lg text-sm font-semibold h-full outline-none border-2 opacity-90 focus:opacity-100": true
   })
 
   const metaButtonClassNames = classnames({
     [baseButtonClassName]: true,
-    "border-slate-600 focus:border-slate-900": true
+    "border-slate-500 focus:border-slate-100 text-zinc-200": true
   })
 
   return (
@@ -42,9 +42,10 @@ export default function SkiAreaFilter({ options, onFilter }) {
         {options.map((name, index) => {
           const className = classnames({
             [baseButtonClassName]: true,
+            "border-transparent": true,
             "ml-2": index !== 0,
-            "bg-[#ffcb03] focus:border-[#ffcb03]": selected.includes(name),
-            "bg-slate-500 focus:border-slate-900": !selected.includes(name)
+            "bg-orange-300 focus:border-orange-700 text-gray-800": selected.includes(name),
+            "bg-slate-600 focus:border-slate-100 text-zinc-200": !selected.includes(name)
           })
           return (
             <div key={name}>
