@@ -2,9 +2,9 @@
 import React from 'react'
 import classnames from 'classnames'
 
-import SkiAreaCard from '../components/ski-area-card'
-import SkiAreaCardSubTitle from '../components/ski-area-card-sub-title'
-import SkiAreaFilter from '../components/ski-area-filter'
+import SkiAreaCard from '@/components/ski-area-card'
+import SkiAreaCardSubTitle from '@/components/ski-area-card-sub-title'
+import SkiAreaFilter from '@/components/ski-area-filter'
 
 export default function SkiAreaUI({ data }) {
   const {
@@ -17,7 +17,7 @@ export default function SkiAreaUI({ data }) {
     sunlight
   } = data
 
-  const wrapperClassnames = classnames({ "p-3 bg-gray-800": true })
+  const wrapperClassnames = classnames({ "p-3 bg-gray-800 min-h-screen": true })
   const titleClassnames = classnames({ "text-4xl mb-5 text-zinc-200": true })
   const infoBlockClassnames = classnames({ "py-3 tracking-wider": true })
   const labelClassNames = classnames({ "text-xl font-bold text-gray-300": true })
@@ -26,7 +26,7 @@ export default function SkiAreaUI({ data }) {
   const allfilterKeys = Object.keys(data)
     .map((key) => data[key].name)
 
-  allfilterKeys.push('Ski Cooper')
+  allfilterKeys.push("Ski Cooper")
   const [filter, setFilter] = React.useState(allfilterKeys)
 
   return (

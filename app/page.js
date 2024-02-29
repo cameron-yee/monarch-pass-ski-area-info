@@ -1,14 +1,14 @@
-import React from 'react'
+import React from "react"
 
-import getABasinInfo from '../data/get-a-basin-info'
-import getCopperInfo from '../data/get-copper-info'
-import getLovelandInfo from '../data/get-loveland-info'
-import getMonarchInfo from '../data/get-monarch-info'
-import getPowderhornInfo from '../data/get-powderhorn-info'
-import getPurgatoryInfo from '../data/get-purgatory-info'
-import getSunlightInfo from '../data/get-sunlight-info'
+import getABasinInfo from "../data/get-a-basin-info"
+import getCopperInfo from "../data/get-copper-info"
+import getLovelandInfo from "../data/get-loveland-info"
+import getMonarchInfo from "../data/get-monarch-info"
+import getPowderhornInfo from "../data/get-powderhorn-info"
+import getPurgatoryInfo from "../data/get-purgatory-info"
+import getSunlightInfo from "../data/get-sunlight-info"
 
-import SkiAreaUI from '@/components/ski-area-ui'
+import SkiAreaUI from "@/components/ski-area-ui"
 
 async function getData() {
   const [
@@ -32,31 +32,31 @@ async function getData() {
   const info = {
     aBasin: {
       data: aBasinInfo,
-      name: 'Arapahoe Basin'
+      name: "Arapahoe Basin"
     },
     copper: {
       data: copperInfo,
-      name: 'Copper Mountain'
+      name: "Copper Mountain"
     },
     loveland: {
       data: lovelandInfo,
-      name: 'Loveland'
+      name: "Loveland"
     },
     monarch: {
       data: monarchInfo,
-      name: 'Monarch'
+      name: "Monarch"
     },
     powderhorn: {
       data: powderhornInfo,
-      name: 'Powderhorn'
+      name: "Powderhorn"
     },
     purgatory: {
       data: purgatoryInfo,
-      name: 'Purgatory'
+      name: "Purgatory"
     },
     sunlight: {
       data: sunlightInfo,
-      name: 'Sunlight'
+      name: "Sunlight"
     }
   }
 
