@@ -1,16 +1,7 @@
-import { useCallback } from 'react'
+import React from 'react'
 import classnames from 'classnames'
 
 export default function ValuePair({ subValues, label, value, filterValues=[] }) {
-  for (let i = 0; i < filterValues.length; i++) {
-    const filterFn = filterValues[i]
-    if (typeof filterValues[i] === 'function') {
-      if (filterFn(value) === false) {
-        return null
-      }
-    }
-  }
-
   const valueLowerCase = String(value).toLowerCase()
 
   const labelClassNames = classnames({ "text-xl font-bold text-gray-300": true })
@@ -22,13 +13,22 @@ export default function ValuePair({ subValues, label, value, filterValues=[] }) 
   })
   const subValueDividerClassNames = classnames({ "text-sm font-normal text-gray-400": true })
 
-  const subValueClassNames = useCallback((index) => {
+  const subValueClassNames = React.useCallback((index) => {
     return classnames({
       "text-sm font-normal": true,
       "text-blue-300": index !== 1,
       "text-green-200": index === 1
     })
   }, [])
+
+  for (let i = 0; i < filterValues.length; i++) {
+    const filterFn = filterValues[i]
+    if (typeof filterValues[i] === 'function') {
+      if (filterFn(value) === false) {
+        return null
+      }
+    }
+  }
 
   if (!subValues) {
     return (
@@ -41,7 +41,7 @@ export default function ValuePair({ subValues, label, value, filterValues=[] }) 
   const subValueMap = subValues.map((subValue, index) => {
     if (index === 0) {
       return (
-        <span className={subValueClassNames(index)}>{subValue}</span>
+        <span className={subValueClassNames(index)} key={subValue}>{subValue}</span>
       )
     }
 

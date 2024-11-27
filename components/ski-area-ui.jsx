@@ -131,6 +131,7 @@ export default function SkiAreaUI({ data }) {
 
              return (
                <ValuePair
+                 key={name}
                  filterValues={[filterNotClosed]}
                  label={name}
                  value={status}
