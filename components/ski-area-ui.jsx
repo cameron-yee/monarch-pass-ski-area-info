@@ -2,9 +2,11 @@
 import React from 'react'
 import classnames from 'classnames'
 
+import OpenFilter from '@/components/open-filter'
 import SkiAreaCard from '@/components/ski-area-card'
 import SkiAreaCardSubTitle from '@/components/ski-area-card-sub-title'
 import SkiAreaFilter from '@/components/ski-area-filter'
+import ValuePair from '@/components/value-pair'
 
 export default function SkiAreaUI({ data }) {
   const {
@@ -20,83 +22,105 @@ export default function SkiAreaUI({ data }) {
   const wrapperClassnames = classnames({ "p-3 bg-gray-800 min-h-screen": true })
   const titleClassnames = classnames({ "text-4xl mb-5 text-zinc-200": true })
   const infoBlockClassnames = classnames({ "py-3 tracking-wider": true })
-  const labelClassNames = classnames({ "text-xl font-bold text-gray-300": true })
-  const infoClassNames = classnames({ "text-xl font-bold text-orange-200": true })
 
-  const allfilterKeys = Object.keys(data)
+  const allAreaFilterKeys = Object.keys(data)
     .map((key) => data[key].name)
 
-  allfilterKeys.push("Ski Cooper")
-  const [filter, setFilter] = React.useState(allfilterKeys)
+  allAreaFilterKeys.push("Ski Cooper")
+  const [areaFilter, setAreaFilter] = React.useState(allAreaFilterKeys)
+  const [openFilter, setOpenFilter] = React.useState(false)
+
+  const filterNotClosed = React.useCallback((value) => {
+    if (!openFilter) {
+      return true
+    }
+
+    return String(value).toLowerCase() !== 'closed'
+  }, [openFilter])
 
   return (
     <div className={wrapperClassnames}>
       <h1 className={titleClassnames}>Monarch Pass Ski Area Info</h1>
-      <SkiAreaFilter options={allfilterKeys} onFilter={setFilter} />
+      <SkiAreaFilter options={allAreaFilterKeys} onFilter={setAreaFilter} />
+      <OpenFilter setOpenFilter={setOpenFilter} openFilter={openFilter} />
       <SkiAreaCard
         data={aBasin.data}
-        filter={filter}
+        filter={areaFilter}
         name={aBasin.name}
+        filterValues={[filterNotClosed]}
       />
       <SkiAreaCard
         data={loveland.data}
-        filter={filter}
+        filter={areaFilter}
         name={loveland.name}
+        filterValues={[filterNotClosed]}
       />
       <SkiAreaCard
         data={monarch.data}
-        filter={filter}
+        filter={areaFilter}
         name={monarch.name}
+        filterValues={[filterNotClosed]}
       />
       <SkiAreaCard
         data={powderhorn.data}
-        filter={filter}
+        filter={areaFilter}
         name={powderhorn.name}
+        filterValues={[filterNotClosed]}
       />
       <SkiAreaCard
         data={purgatory.data}
-        filter={filter}
+        filter={areaFilter}
         name={purgatory.name}
+        filterValues={[filterNotClosed]}
       />
       <SkiAreaCard
         data={sunlight.data}
-        filter={filter}
+        filter={areaFilter}
         name={sunlight.name}
+        filterValues={[filterNotClosed]}
       />
       <SkiAreaCard
         data={copper.data}
-        filter={filter}
+        filter={areaFilter}
         name={copper.name}
       >
         <SkiAreaCardSubTitle title={'Snow Info'} />
         <div className={infoBlockClassnames}>
            {Object.entries(copper.data?.snowReports[0]?.computed || {}).map(([key, value]) => {
              return (
-               <div key={key}>
-                 <span className={labelClassNames}>{key}: </span><span className={infoClassNames}>{value}</span>
-               </div>
+               <ValuePair key={key} label={key.split('_').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ')} value={value} />
              )
           })}
         </div>
         <SkiAreaCardSubTitle title={'Lift Info'} />
         <div className={infoBlockClassnames}>
            <div className="pb-3 mb-3 border-b border-gray-900">
-             <span className={labelClassNames}>Lifts Open: </span><span className={infoClassNames}>{copper.data?.liftReports?.reduce((acc, liftReport) => (acc + (liftReport.status === 'open' ? 1 : 0)), 0)} out of {copper.data?.liftReports?.length}</span>
+             <ValuePair
+               label={'Lifts Open'}
+               value={`${copper.data?.liftReports?.reduce((acc, liftReport) => (acc + (liftReport.status === 'open' ? 1 : 0)), 0)} out of ${copper.data?.liftReports?.length}`}
+             />
            </div>
            {(copper.data?.liftReports || []).map((liftReport) => {
              const { name, hours, status } = liftReport
 
              return (
-               <div key={name}>
-                 <span className={labelClassNames}>{name}: </span><span className={infoClassNames}>{status} ({status === 'open' ? hours : '--'})</span>
-               </div>
+               <ValuePair
+                 filterValues={[filterNotClosed]}
+                 key={name}
+                 label={name}
+                 value={status}
+                 subValues={status === 'open' ? [hours] : null}
+               />
              )
           })}
         </div>
         <SkiAreaCardSubTitle title={'Trail Info'} />
         <div className={infoBlockClassnames}>
            <div className="pb-3 mb-3 border-b border-gray-900">
-             <span className={labelClassNames}>Trails Open: </span><span className={infoClassNames}>{copper.data?.trailReports?.reduce((acc, trailReport) => (acc + (trailReport.status === 'open' ? 1 : 0)), 0)} out of {copper.data?.trailReports?.length}</span>
+             <ValuePair
+               label={'Trails Open'}
+               value={`${copper.data?.trailReports?.reduce((acc, trailReport) => (acc + (trailReport.status === 'open' ? 1 : 0)), 0)} out of ${copper.data?.trailReports?.length}`}
+             />
            </div>
            {(copper.data?.trailReports || []).map((trailReport) => {
              const { name, status, difficulty, season, sector } = trailReport
@@ -106,15 +130,18 @@ export default function SkiAreaUI({ data }) {
              }
 
              return (
-               <div key={name}>
-                 <span className={labelClassNames}>{name}: </span><span className={infoClassNames}>{sector.name} / {difficulty} / {status}</span>
-               </div>
+               <ValuePair
+                 filterValues={[filterNotClosed]}
+                 label={name}
+                 value={status}
+                 subValues={[difficulty.split('_').map((word) => word[0].toUpperCase() + word.slice(1)).join(' '), sector.name]}
+               />
              )
           })}
         </div>
       </SkiAreaCard>
       <SkiAreaCard
-        filter={filter}
+        filter={areaFilter}
         name={'Ski Cooper'}
       >
         <SkiAreaCardSubTitle title={'Snow Info'} />

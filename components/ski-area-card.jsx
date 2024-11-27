@@ -8,6 +8,7 @@ export default function SkiAreaCard({
   children,
   data={},
   filter,
+  filterValues,
   name
 }) {
   if (data === null) {
@@ -35,9 +36,9 @@ export default function SkiAreaCard({
       <div className={areaWrapperClassnames}>
         <SkiAreaCardTitle title={name} />
         <SkiAreaCardSubTitle title={'Snow Info'} />
-        <InfoBlock infoBlock={snowInfo} />
+        <InfoBlock infoBlock={snowInfo} filterValues={filterValues} />
         <SkiAreaCardSubTitle title={'Lift Info'} />
-        <InfoBlock infoBlock={liftInfo} />
+        <InfoBlock infoBlock={liftInfo} filterValues={filterValues} />
       </div>
   )
 }
