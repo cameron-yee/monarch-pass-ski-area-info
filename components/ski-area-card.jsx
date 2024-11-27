@@ -10,6 +10,10 @@ export default function SkiAreaCard({
   filter,
   name
 }) {
+  if (data === null) {
+    return null
+  }
+
   const areaWrapperClassnames = classnames({ "bg-gray-600 p-3 mb-5 rounded shadow-lg": true })
 
   const { liftInfo, snowInfo } = data

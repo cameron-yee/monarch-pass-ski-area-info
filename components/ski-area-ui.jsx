@@ -70,10 +70,10 @@ export default function SkiAreaUI({ data }) {
       >
         <SkiAreaCardSubTitle title={'Snow Info'} />
         <div className={infoBlockClassnames}>
-           {(copper.data?.snowReport[0]?.items || []).map((item) => {
+           {Object.entries(copper.data?.snowReports[0]?.computed || {}).map(([key, value]) => {
              return (
-               <div key={item.duration}>
-                 <span className={labelClassNames}>{item.duration}: </span><span className={infoClassNames}>{item.amount}</span>
+               <div key={key}>
+                 <span className={labelClassNames}>{key}: </span><span className={infoClassNames}>{value}</span>
                </div>
              )
           })}
@@ -81,12 +81,14 @@ export default function SkiAreaUI({ data }) {
         <SkiAreaCardSubTitle title={'Lift Info'} />
         <div className={infoBlockClassnames}>
            <div className="pb-3 mb-3 border-b border-gray-900">
-             <span className={labelClassNames}>Lifts Open: </span><span className={infoClassNames}>{copper.data?.liftReport?.open} out of {copper.data?.liftReport?.total}</span>
+             <span className={labelClassNames}>Lifts Open: </span><span className={infoClassNames}>{copper.data?.liftReports?.reduce((acc, liftReport) => (acc + (liftReport.status === 'open' ? 1 : 0)), 0)} out of {copper.data?.liftReports?.length}</span>
            </div>
-           {(copper.data?.liftReport?.sectors || []).map((sector) => {
+           {(copper.data?.liftReports || []).map((liftReport) => {
+             const { name, hours, status } = liftReport
+
              return (
-               <div key={sector.name}>
-                 <span className={labelClassNames}>{sector.name}: </span><span className={infoClassNames}>{sector.open} out of {sector.total}</span>
+               <div key={name}>
+                 <span className={labelClassNames}>{name}: </span><span className={infoClassNames}>{status} ({status === 'open' ? hours : '--'})</span>
                </div>
              )
           })}
@@ -94,32 +96,18 @@ export default function SkiAreaUI({ data }) {
         <SkiAreaCardSubTitle title={'Trail Info'} />
         <div className={infoBlockClassnames}>
            <div className="pb-3 mb-3 border-b border-gray-900">
-             <span className={labelClassNames}>Trails Open: </span><span className={infoClassNames}>{copper.data?.trailReport?.open} out of {copper.data?.trailReport?.total}</span>
+             <span className={labelClassNames}>Trails Open: </span><span className={infoClassNames}>{copper.data?.trailReports?.reduce((acc, trailReport) => (acc + (trailReport.status === 'open' ? 1 : 0)), 0)} out of {copper.data?.trailReports?.length}</span>
            </div>
-           {(copper.data?.trailReport?.sectors || []).map((sector) => {
+           {(copper.data?.trailReports || []).map((trailReport) => {
+             const { name, status, difficulty, season, sector } = trailReport
+
+             if (season !== 'winter') {
+               return null
+             }
+
              return (
-               <div key={sector.name}>
-                 <span className={labelClassNames}>{sector.name}: </span><span className={infoClassNames}>{sector.open} out of {sector.total}</span>
-               </div>
-             )
-          })}
-        </div>
-        <SkiAreaCardSubTitle title={'Terrain Park Info'} />
-        <div className={infoBlockClassnames}>
-           {(copper.data?.terrainPark?.sectors || []).map((sector) => {
-             return (
-               <div key={sector.name}>
-                 <span className={labelClassNames}>{sector.name}: </span><span className={infoClassNames}>{sector.open} out of {sector.total}</span>
-               </div>
-             )
-          })}
-        </div>
-        <SkiAreaCardSubTitle title={'Uphill Info'} />
-        <div className={infoBlockClassnames}>
-           {(copper.data?.uphillTrail?.sectors || []).map((sector) => {
-             return (
-               <div key={sector.name}>
-                 <span className={labelClassNames}>{sector.name}: </span><span className={infoClassNames}>{sector.open} out of {sector.total}</span>
+               <div key={name}>
+                 <span className={labelClassNames}>{name}: </span><span className={infoClassNames}>{sector.name} / {difficulty} / {status}</span>
                </div>
              )
           })}
