@@ -2,7 +2,7 @@ import fetchHTML from './fetch-html'
 import * as cheerio from 'cheerio'
 
 export default async function getSunlightInfo() {
-  const html = await fetchHTML('https://sunlightmtn.com/the-mountain/snow-weather-report')
+  const html = await fetchHTML('https://sunlightmtn.com/mountain-information/weather-lifts-trails')
   const $ = cheerio.load(html)
   let infoObject = {
     liftInfo: {},
