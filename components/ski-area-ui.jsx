@@ -38,6 +38,14 @@ export default function SkiAreaUI({ data }) {
     return String(value).toLowerCase() !== 'closed'
   }, [openFilter])
 
+  /**
+  * For Ski Cooper img urls
+  */
+  const today = new Date()
+  const day = today.getDate()
+  const month = today.getMonth() + 1
+  const year = today.getFullYear()
+
   return (
     <div className={wrapperClassnames}>
       <h1 className={titleClassnames}>Monarch Pass Ski Area Info</h1>
@@ -147,12 +155,12 @@ export default function SkiAreaUI({ data }) {
       >
         <SkiAreaCardSubTitle title={'Snow Info'} />
         <img
-          src="https://www.skicooper.com/static/images/SnowReport.jpg"
+          src={`https://www.skicooper.com/coopwp/wp-content/uploads/${year}/${month}/SNOW_CONDITIONS_${year}-${month}-${day}.jpg`}
           alt="Ski Cooper snow info"
         />
         <SkiAreaCardSubTitle title={'Lift Info'} />
         <img
-          src="https://www.skicooper.com/static/images/TrailReport.jpg"
+          src={`https://www.skicooper.com/coopwp/wp-content/uploads/${year}/${month}/REPORT_${year}-${month}-${day}.jpg`}
           alt="Ski Cooper run and lift info"
         />
       </SkiAreaCard>
