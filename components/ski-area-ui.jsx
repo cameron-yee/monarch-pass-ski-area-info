@@ -42,8 +42,8 @@ export default function SkiAreaUI({ data }) {
   * For Ski Cooper img urls
   */
   const today = new Date()
-  const day = today.getDate()
-  const month = today.getMonth() + 1
+  const day = String(today.getDate()).padStart(2, '0')
+  const month = String(today.getMonth() + 1).padStart(2, '0')
   const year = today.getFullYear()
 
   return (
