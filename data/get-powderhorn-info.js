@@ -30,9 +30,14 @@ export default async function getPowderhornInfo() {
   const inElements = $('span:contains("in")')
   inElements.each((i, elem) => {
     const text = $(elem).text().trim()
-    if (text === 'in') {
-      const parentElement = $(elem).parent()
-      const label = $(parentElement).prev().text()
+    if (text !== 'in') {
+      return
+    }
+
+    const parentElement = $(elem).parent()
+    const label = $(parentElement).prev().text()
+
+    if (label) {
       infoObject.snowInfo[label] = parentElement.text()
     }
   })
