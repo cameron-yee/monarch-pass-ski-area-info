@@ -139,7 +139,7 @@ export default function SkiAreaUI({ data }) {
 
              return (
                <ValuePair
-                 key={name}
+                 key={`${name}-${sector.name}`}
                  filterValues={[filterNotClosed]}
                  label={name}
                  value={status}

@@ -10,6 +10,8 @@ import getSunlightInfo from "../data/get-sunlight-info"
 
 import SkiAreaUI from "@/components/ski-area-ui"
 
+export const dynamic = 'force-dynamic';
+
 async function getData() {
   const [
     aBasinInfo,
