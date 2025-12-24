@@ -27,6 +27,7 @@ export default function SkiAreaUI({ data }) {
     .map((key) => data[key].name)
 
   allAreaFilterKeys.push("Ski Cooper")
+  const filterData = { ...data, skiCooper: { name: 'Ski Cooper' }}
   const [areaFilter, setAreaFilter] = React.useState(allAreaFilterKeys)
   const [openFilter, setOpenFilter] = React.useState(false)
 
@@ -49,7 +50,7 @@ export default function SkiAreaUI({ data }) {
   return (
     <div className={wrapperClassnames}>
       <h1 className={titleClassnames}>Monarch Pass Ski Area Info</h1>
-      <SkiAreaFilter options={allAreaFilterKeys} onFilter={setAreaFilter} />
+      <SkiAreaFilter data={filterData} onFilter={setAreaFilter} />
       <OpenFilter setOpenFilter={setOpenFilter} openFilter={openFilter} />
       <SkiAreaCard
         data={aBasin.data}

@@ -2,8 +2,11 @@
 import React from "react"
 import classnames from "classnames"
 
-export default function SkiAreaFilter({ options, onFilter }) {
-  const [selected, setSelected] = React.useState(options)
+export default function SkiAreaFilter({ data, onFilter }) {
+  const allAreaFilterKeys = Object.keys(data)
+    .map((key) => data[key].name)
+
+  const [selected, setSelected] = React.useState(allAreaFilterKeys)
 
   function updateFilters(updatedValue) {
     setSelected(updatedValue)
@@ -39,24 +42,55 @@ export default function SkiAreaFilter({ options, onFilter }) {
         name="filter ski areas"
         id="filter-ski-areas"
       >
-        {options.map((name, index) => {
+        {allAreaFilterKeys.map((name, index) => {
           const className = classnames({
             [baseButtonClassName]: true,
-            "border-transparent": true,
+            "border-transparent flex items-center gap-2": true,
             "ml-2": index !== 0,
             "bg-orange-300 focus:border-orange-700 text-gray-800": selected.includes(name),
             "bg-slate-600 focus:border-slate-100 text-zinc-200": !selected.includes(name)
           })
+          const areaData = Object.values(data).find((value) => value.name === name)
+          const snowInfo = areaData?.data?.snowInfo || {}
+          let snowAmount = Object.values(snowInfo).find((value) => {
+            return (
+              !value.includes(":") ||
+              value.includes('”') ||
+              value.includes('"') ||
+              value.includes("in")
+            )
+          })
+
+          if (name === "Copper Mountain") {
+            snowAmount = areaData?.data?.snowReports[0]?.amount
+          }
+
+          let formattedSnow = snowAmount
+          try {
+            formattedSnow = `${parseInt(formattedSnow, 10)}"`
+          } catch {}
+
           return (
             <div key={name}>
-              <button className={className} onClick={() => toggleFilter(name)}>{name}</button>
+              <button
+                className={className}
+                onClick={() => toggleFilter(name)}
+              >
+                <span>{name}</span>
+                {snowAmount !== undefined ? (
+                  <span className="bg-gray-800 text-orange-300 p-2 rounded-md">
+                    {formattedSnow}
+                  </span>)
+                  : null
+                }
+              </button>
             </div>
           )
         })}
       </div>
       <div className="flex mb-5 overflow-x-auto">
         <button className={metaButtonClassNames} onClick={() => updateFilters([])}>Remove All</button>
-        <button className={classnames(metaButtonClassNames, 'ml-2')} onClick={() => updateFilters(options)}>Reset</button>
+        <button className={classnames(metaButtonClassNames, 'ml-2')} onClick={() => updateFilters(allAreaFilterKeys)}>Reset</button>
       </div>
     </>
   )
