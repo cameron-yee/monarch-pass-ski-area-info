@@ -2,7 +2,7 @@ import fetchHTML from './fetch-html'
 import * as cheerio from 'cheerio'
 
 export default async function getSunlightInfo() {
-  const html = await fetchHTML('https://sunlightmtn.com/mountain-information/weather-lifts-trails')
+  const html = await fetchHTML('https://sunlightmtn.com/explore/mountain-status/')
   const $ = cheerio.load(html)
   let infoObject = {
     liftInfo: {},
@@ -12,23 +12,32 @@ export default async function getSunlightInfo() {
   /**
     * Lift Report
     */
-  const conditionsMain = $('div.conditions-main')
-  const liftElems = $(conditionsMain).find('div[class="condition-names"]')
-  liftElems.each((i, elem) => {
-    const label = $(elem).text().trim()
-    const value = $(elem).next().text().trim()
-    infoObject.liftInfo[label] = value
+  const liftQueries = [
+    "Primo Chair",
+    "Segundo Chair",
+    "Tercero Chair"
+  ]
+  liftQueries.forEach((query) => {
+    const spans = $(`span:contains("${query}")`)
+    const target = spans[spans.length - 1]
+    const status = $(target).next().text()
+    infoObject.liftInfo[query] = status
   })
 
   /**
     * Snow Report
     */
-  const snowFallMain = $('div.snow-fall-main')
-  const snowElems = $(snowFallMain).find('div[class="hours"]')
-  snowElems.each((i, elem) => {
-    const label = $(elem).text().trim()
-    const value = $(elem).next().text().trim()
-    infoObject.snowInfo[label] = value
+  const snowQueries = [
+    "Since 4PM",
+    "Last 24 Hours",
+    "Last 48 Hours",
+    "Season Total"
+  ]
+  snowQueries.forEach((query) => {
+    const spans = $(`span:contains("${query}")`)
+    const target = spans[spans.length - 1]
+    const amount = $(target).parent().next().text()
+    infoObject.snowInfo[query] = amount
   })
 
   return infoObject
