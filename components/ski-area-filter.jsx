@@ -1,6 +1,7 @@
 "use client"
 import React from "react"
 import classnames from "classnames"
+import InchesOfSnow from "@/components/inches-of-snow"
 
 export default function SkiAreaFilter({ data, onFilter }) {
   const allAreaFilterKeys = Object.keys(data)
@@ -52,23 +53,6 @@ export default function SkiAreaFilter({ data, onFilter }) {
           })
           const areaData = Object.values(data).find((value) => value.name === name)
           const snowInfo = areaData?.data?.snowInfo || {}
-          let snowAmount = Object.values(snowInfo).find((value) => {
-            return (
-              !value.includes(":") ||
-              value.includes('”') ||
-              value.includes('"') ||
-              value.includes("in")
-            )
-          })
-
-          if (name === "Copper Mountain") {
-            snowAmount = areaData?.data?.snowReports[0]?.amount
-          }
-
-          let formattedSnow = snowAmount
-          try {
-            formattedSnow = `${parseInt(formattedSnow, 10)}"`
-          } catch {}
 
           return (
             <div key={name}>
@@ -77,12 +61,11 @@ export default function SkiAreaFilter({ data, onFilter }) {
                 onClick={() => toggleFilter(name)}
               >
                 <span>{name}</span>
-                {snowAmount !== undefined ? (
-                  <span className="bg-gray-800 text-orange-300 p-2 rounded-md">
-                    {formattedSnow}
-                  </span>)
-                  : null
-                }
+                <InchesOfSnow
+                  areaData={areaData}
+                  name={name}
+                  snowInfo={snowInfo}
+                />
               </button>
             </div>
           )
