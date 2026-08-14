@@ -46,9 +46,9 @@ export default function ValuePair({ subValues, label, value, filterValues=[] }) 
     }
 
     return (
-      <>
+      <div key={subValue}>
         <span className={subValueDividerClassNames}> / </span><span className={subValueClassNames(index)}>{subValue}</span>
-      </>
+      </div>
     )
   })
 
