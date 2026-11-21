@@ -95,7 +95,7 @@ export default function SkiAreaUI({ data }) {
       >
         <SkiAreaCardSubTitle title={'Snow Info'} />
         <div className={infoBlockClassnames}>
-           {Object.entries(copper.data?.snowReports[0]?.computed || {}).map(([key, value]) => {
+           {Object.entries(copper.data?.snowReports?.[0]?.computed || {}).map(([key, value]) => {
              return (
                <ValuePair key={key} label={key.split('_').map((word) => word[0].toUpperCase() + word.slice(1)).join(' ')} value={value} />
              )
